@@ -37,6 +37,7 @@ class CarBookingController extends Controller
         //
         try {
 
+
             CarBooking::create([
             'booking_by' => 1, 
             'start_date' => $request->input('start_date'),

@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UserSeeder::class,
-            CarBookingSeeder::class,
+            // CarBookingSeeder::class,
         ]);
         // User::factory(10)->create();
 
