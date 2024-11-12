@@ -6,6 +6,7 @@ use App\Enums\HttpStatusCode;
 use App\Models\CarBooking;
 use App\Http\Requests\StoreCarBookingRequest;
 use App\Http\Requests\UpdateCarBookingRequest;
+use App\Services\CarBookingService\CarBookingService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Response;
 
@@ -13,6 +14,18 @@ use Illuminate\Http\Response;
 
 class CarBookingController extends Controller
 {
+
+
+    protected $_carBookingService;
+
+    public function __construct()
+    {
+        $this->_carBookingService = new CarBookingService();
+    }
+
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -38,19 +51,19 @@ class CarBookingController extends Controller
         try {
 
 
-            CarBooking::create([
-            'booking_by' => 1, 
-            'start_date' => $request->input('start_date'),
-            'start_time' => $request->input('start_time'),
-            'end_date' => $request->input('end_date'),
-            'end_time' => $request->input('end_time'),
-            'drivers' => $request->input('drivers'),
-            'goal_booking' => $request->input('goal_booking'),
-            ]);
+            $res = $this->_carBookingService->store($request);
 
-        return response()->json([
-            'message' => HttpStatusCode::CREATED->getMessage(),
-        ], HttpStatusCode::CREATED->value);
+
+            return match ($res['status']) {
+
+                HttpStatusCode::CREATED => response()->json( ['message' => $res['message']], HttpStatusCode::CREATED->value ),
+
+                HttpStatusCode::INTERNAL_SERVER_ERROR => response()->json(['message' => $res['message']],     HttpStatusCode::INTERNAL_SERVER_ERROR->value),
+
+                default => response()->json(['message' => 'Unknown error occurred.'], HttpStatusCode::INTERNAL_SERVER_ERROR->value),
+            };
+
+    
 
         } catch (\Exception $e) {
             Log::error($e->getMessage());
