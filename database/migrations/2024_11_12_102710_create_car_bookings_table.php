@@ -21,6 +21,7 @@ return new class extends Migration
             //? 1--> pendig. 2--> approved. 3 -->canceld
             $table->integer('status_booking')->default(1);
             $table->integer('drivers')->default('1');
+            $table->boolean('goal_booking')->default('0');         
             $table->boolean('is_deleted')->default('0');         
             $table->timestamps();
             $table->foreign('booking_by')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
